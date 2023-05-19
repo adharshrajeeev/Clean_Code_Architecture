@@ -1,11 +1,16 @@
+import userController from "../../../../controllers/userControllers.js";
+import userRepositoryImplements from "../../../database/mongodb/repository/userRepositoryImplements.js";
+import userRepositoryInterface from "../../../../application/repositories/userRepository.js";
+
 const  userAuthRouter = (express)=>{
     const router=express.Router();
     
-    router.get('/',(req,res)=>{
-        console.log("hai da");
-        res.send("ivda vada")
-    })
+    const controller=userController(userRepositoryInterface,userRepositoryImplements)
+
+    router.get('/',controller.viewAllUsers)
+    router.post('/:id',controller.AddNewUser)
+
     return router
-}
+} 
 
 export default userAuthRouter

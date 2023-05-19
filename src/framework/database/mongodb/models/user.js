@@ -1,38 +1,67 @@
-export default function dbConnection(mongoose, config, options) {
-    function connectToMongoose() {
-        mongoose.connect(config.mongo.uri, options).then(
-            () => { },
-            (err) => {
-                console.info('Mongodb error', err);
-            }
-        )
-            .catch((err) => {
-                console.log('ERROR:', err);
-            });
+import mongoose from "mongoose";
 
+const UserSchema=mongoose.Schema({
+    
+    userName:{
+        type:String,
+        required:true
+    },
+    email:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    phoneNumber:{
+        type:String,
+       
+    },
+    dateOfBirth:{
+        type:Date,
+        
+    },
+    gender:{
+        type:String,
+       
+    },
+    userBio:{
+        type:String,
+       
+    },
+    followers:[
+        {
+         
+            type:mongoose.Types.ObjectId,
+             ref:"users"
+        
+        }
+    ],
+    following:[
+        {
+         
+             type:mongoose.Types.ObjectId,
+              ref:"users"
+           
+         }
+    ],
+    coverPic:{
+        type:String
+    },
+    profilePic:{
+        type:String
+    },
+    isBlocked:{
+        type:Boolean,
+        default:false
+    },
+    mailOtp:{
+        type:String
     }
-    mongoose.connection.on('connected', () => {
-        console.info('Connected to MongoDB!');
-    });
 
-    mongoose.connection.on('reconnected', () => {
-        console.info('MongoDB reconnected!');
-    });
+},{timestamps:true})
 
-    mongoose.connection.on('error', (error) => {
-        console.error(`Error in MongoDb connection: ${error}`);
-        mongoose.disconnect();
-    });
-
-    mongoose.connection.on('disconnected', () => {
-        console.error(
-            `MongoDB disconnected! Reconnecting in ${options.reconnectInterval / 1000
-            }s...`
-        );
-        setTimeout(() => connectToMongoose(), options.reconnectInterval);
-    });
-
-    return {
-        connectToMongoose
-    };
-}
+const User = mongoose.model('User', UserSchema);
+export default User
